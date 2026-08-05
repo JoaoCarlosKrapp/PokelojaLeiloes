@@ -1,0 +1,107 @@
+# ==========================
+# Python
+# ==========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+*.pyo
+
+# Distribuição / Build
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# ==========================
+# Ambientes Virtuais
+# ==========================
+.venv/
+venv/
+env/
+ENV/
+
+# ==========================
+# Variáveis de Ambiente
+# ==========================
+.env
+.env.*
+!.env.example
+
+# ==========================
+# Logs
+# ==========================
+*.log
+logs/
+uvicorn.log
+
+# ==========================
+# Testes
+# ==========================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# ==========================
+# Type Checkers
+# ==========================
+.mypy_cache/
+.pyre/
+.pytype/
+
+# ==========================
+# Lint
+# ==========================
+.ruff_cache/
+.pylint.d/
+
+# ==========================
+# Jupyter
+# ==========================
+.ipynb_checkpoints/
+
+# ==========================
+# IDEs
+# ==========================
+.vscode/
+.idea/
+*.iml
+
+# ==========================
+# Sistema Operacional
+# ==========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================
+# Banco de Dados Local
+# ==========================
+*.db
+*.sqlite
+*.sqlite3
+
+# ==========================
+# Alembic
+# ==========================
+# Descomente se você NÃO quiser versionar as migrations
+# alembic/versions/
+
+# ==========================
+# Docker
+# ==========================
+docker-compose.override.yml
+
+# ==========================
+# Arquivos Temporários
+# ==========================
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
