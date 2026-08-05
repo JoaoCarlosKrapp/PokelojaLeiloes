@@ -1,0 +1,576 @@
+# Requisitos de Software — Site de Leilões de Cartas Pokémon TCG
+
+## 1. Objetivo
+
+Desenvolver uma plataforma web de leilões exclusiva para cartas de Pokémon TCG.
+
+Somente o administrador poderá cadastrar cartas, criar leilões e disponibilizar produtos para venda. Usuários deverão criar uma conta e aguardar a aprovação do administrador antes de poderem realizar lances.
+
+Os usuários poderão acompanhar os leilões em andamento, visualizar as informações atualizadas em tempo real, consultar o histórico de lances e conversar com o administrador após vencerem um leilão.
+
+A plataforma não processará pagamentos nem organizará entregas ou fretes. Esses detalhes deverão ser combinados diretamente entre o administrador e o vencedor por meio do chat interno disponibilizado após o encerramento do leilão.
+
+---
+
+## 2. Tecnologias obrigatórias
+
+O sistema deverá ser desenvolvido utilizando as seguintes tecnologias:
+
+### Backend
+
+* Linguagem Python;
+* FastAPI como framework principal;
+* API seguindo o padrão REST para comunicação com o frontend;
+* WebSockets para comunicação e atualização em tempo real;
+* Alembic para criação, controle e execução das migrações do banco de dados;
+* PostgreSQL como banco de dados relacional.
+
+O backend deverá concentrar:
+
+* Autenticação e autorização;
+* Controle de permissões;
+* Gerenciamento de usuários;
+* Aprovação de usuários;
+* Cadastro de cartas;
+* Gerenciamento de leilões;
+* Processamento e validação de lances;
+* Definição dos vencedores;
+* Gerenciamento de notificações;
+* Funcionamento do chat interno;
+* Comunicação em tempo real por WebSockets.
+
+### Frontend
+
+* React;
+* TypeScript;
+* Interface responsiva para computadores, tablets e celulares;
+* Integração com a API do backend;
+* Integração com WebSockets para receber atualizações em tempo real.
+
+O frontend deverá exibir alterações nos leilões sem exigir que o usuário atualize manualmente a página.
+
+---
+
+## 3. Perfis de acesso
+
+### Visitante
+
+O visitante poderá:
+
+* Visualizar os leilões ativos;
+* Consultar os detalhes públicos das cartas;
+* Visualizar o maior lance atual;
+* Visualizar o histórico público de lances;
+* Consultar o tempo restante dos leilões.
+
+O visitante não poderá realizar lances nem acessar conversas privadas.
+
+### Usuário cadastrado pendente
+
+O usuário pendente poderá:
+
+* Fazer login;
+* Consultar seu status de aprovação;
+* Visualizar os leilões.
+
+O usuário pendente não poderá realizar lances até que seja aprovado pelo administrador.
+
+### Usuário aprovado
+
+O usuário aprovado poderá:
+
+* Realizar lances em leilões ativos;
+* Consultar os próprios lances;
+* Consultar os leilões vencidos;
+* Receber notificações;
+* Utilizar o chat interno após vencer um leilão.
+
+### Administrador
+
+O administrador poderá:
+
+* Aprovar ou rejeitar usuários;
+* Cadastrar e editar cartas;
+* Criar e gerenciar leilões;
+* Publicar, pausar, cancelar e encerrar leilões;
+* Consultar todos os lances;
+* Consultar todos os vencedores;
+* Consultar e participar das conversas;
+* Gerenciar notificações e informações da plataforma.
+
+---
+
+## 4. Requisitos funcionais
+
+## 4.1 Cadastro e autenticação
+
+* O sistema deve permitir o cadastro de novos usuários.
+* O sistema deve permitir login e logout.
+* Todo novo usuário deve ser cadastrado inicialmente com o status pendente.
+* O administrador deve poder aprovar ou rejeitar usuários cadastrados.
+* Apenas usuários aprovados podem realizar lances.
+* O sistema deve impedir que usuários pendentes ou rejeitados realizem lances.
+* Cada usuário deve possuir uma área para consultar seu perfil e seu status de aprovação.
+* Cada usuário aprovado deve possuir uma área para consultar seus lances.
+* Cada usuário aprovado deve possuir uma área para consultar os leilões vencidos.
+* O sistema deve controlar o acesso às funcionalidades de acordo com o perfil e o status do usuário.
+
+---
+
+## 4.2 Cadastro de cartas
+
+* Apenas o administrador pode cadastrar cartas.
+* Apenas o administrador pode editar ou remover cartas.
+* Cada carta deve possuir obrigatoriamente:
+
+  * Nome;
+  * Imagem;
+  * Código.
+* O sistema também deve permitir informar:
+
+  * Coleção;
+  * Número da carta;
+  * Idioma;
+  * Raridade;
+  * Condição;
+  * Versão;
+  * Descrição;
+  * Observações sobre defeitos.
+* Uma carta deve poder ser vinculada a um ou mais leilões, desde que os leilões ocorram em momentos diferentes ou respeitem as regras definidas pelo administrador.
+* As imagens das cartas devem ser apresentadas nas listagens e nas páginas de detalhes dos leilões.
+
+---
+
+## 4.3 Gerenciamento de leilões
+
+O administrador deve poder:
+
+* Criar leilões;
+* Editar leilões em rascunho ou ainda não iniciados;
+* Publicar leilões;
+* Pausar leilões;
+* Retomar leilões pausados;
+* Cancelar leilões;
+* Encerrar leilões;
+* Consultar o histórico e o resultado dos leilões.
+
+Cada leilão deve possuir:
+
+* Carta vinculada;
+* Título;
+* Descrição opcional;
+* Valor inicial;
+* Incremento mínimo;
+* Data e hora de início;
+* Data e hora de encerramento;
+* Status;
+* Maior lance atual;
+* Usuário responsável pelo maior lance;
+* Vencedor, quando houver;
+* Valor do lance vencedor, quando houver.
+
+O incremento mínimo deve ser definido individualmente pelo administrador em cada leilão.
+
+Os possíveis status de um leilão devem incluir:
+
+* Rascunho;
+* Agendado;
+* Ativo;
+* Pausado;
+* Cancelado;
+* Encerrado.
+
+A página inicial deve apresentar os leilões ativos.
+
+Cada leilão apresentado na página inicial deve mostrar:
+
+* Imagem da carta;
+* Nome da carta;
+* Código da carta;
+* Maior lance atual;
+* Nome do usuário responsável pelo maior lance;
+* Tempo restante;
+* Status do leilão.
+
+A página de detalhes do leilão deve apresentar:
+
+* Todas as informações disponíveis da carta;
+* Valor inicial;
+* Incremento mínimo;
+* Maior lance atual;
+* Nome do usuário responsável pelo maior lance;
+* Histórico de lances;
+* Data e hora de início;
+* Data e hora de encerramento;
+* Contagem regressiva;
+* Status atual;
+* Campo para realização de lances, quando permitido.
+
+O leilão deve encerrar exatamente na data e hora configuradas.
+
+O sistema não deve estender automaticamente o prazo do leilão quando forem realizados lances próximos ao horário de encerramento.
+
+Ao encerrar o leilão, o sistema deve identificar automaticamente o maior lance válido e definir seu autor como vencedor.
+
+Caso nenhum lance tenha sido realizado, o leilão deve ser encerrado sem vencedor.
+
+---
+
+## 4.4 Lances
+
+* Apenas usuários autenticados e aprovados podem realizar lances.
+* Os lances somente podem ser realizados em leilões ativos.
+* O primeiro lance deve ser igual ou superior ao valor inicial do leilão.
+* Quando já existirem lances, o novo valor deve ser igual ou superior à soma do maior lance atual com o incremento mínimo.
+* O sistema deve validar o lance no backend antes de registrá-lo.
+* Lances enviados não podem ser editados.
+* Lances enviados não podem ser cancelados ou removidos pelo usuário.
+* O sistema não deve oferecer lances automáticos.
+* O sistema deve registrar o usuário, o valor, a data e a hora de cada lance.
+* O sistema deve utilizar a data e a hora do servidor como referência para validar os lances.
+* O sistema deve impedir lances em leilões pausados, cancelados ou encerrados.
+* O sistema deve impedir lances enviados após o horário de encerramento.
+* Todos os usuários devem poder visualizar o maior lance atual.
+* Todos os usuários devem poder visualizar o nome de usuário responsável pelo maior lance.
+* O histórico deve apresentar:
+
+  * Nome do usuário;
+  * Valor do lance;
+  * Data;
+  * Hora.
+* O nome de usuário utilizado nos lances será público.
+* O sistema deve tratar lances simultâneos de forma segura, evitando que dois lances sejam registrados incorretamente como o maior lance.
+* A validação final do lance deve ser realizada pelo backend, independentemente dos dados exibidos no frontend.
+
+---
+
+## 4.5 Atualizações em tempo real
+
+O sistema deve utilizar WebSockets para atualizar as informações dos leilões em tempo real.
+
+Quando um lance válido for realizado, os usuários conectados ao respectivo leilão devem receber automaticamente:
+
+* Novo valor do maior lance;
+* Nome do usuário responsável pelo lance;
+* Novo registro no histórico de lances;
+* Data e hora do lance;
+* Valor mínimo necessário para o próximo lance.
+
+Os usuários também devem receber atualizações em tempo real quando:
+
+* Um leilão for iniciado;
+* Um leilão for pausado;
+* Um leilão for retomado;
+* Um leilão for cancelado;
+* Um leilão for encerrado;
+* Um vencedor for definido;
+* O tempo ou status relevante do leilão for alterado.
+
+A interface não deve exigir atualização manual da página para exibir novos lances ou mudanças no status do leilão.
+
+Caso a conexão WebSocket seja interrompida, o frontend deve tentar reconectá-la e sincronizar novamente as informações atuais do leilão com o backend.
+
+A API tradicional deve continuar sendo a fonte oficial dos dados. Os WebSockets devem ser utilizados para notificar o frontend sobre alterações em tempo real.
+
+---
+
+## 4.6 Chat interno
+
+* O chat interno deve ser liberado somente após o encerramento do leilão.
+* O chat deve ser disponibilizado apenas quando houver um vencedor.
+* Cada conversa deve estar vinculada a um único leilão.
+* Cada conversa deve conectar exclusivamente:
+
+  * O administrador;
+  * O vencedor do leilão.
+* Outros usuários não podem visualizar ou participar da conversa.
+* O chat deve permitir a troca de mensagens para combinação de pagamento, entrega e frete.
+* O administrador deve poder consultar todas as conversas vinculadas aos leilões.
+* O vencedor deve poder consultar apenas as conversas dos leilões vencidos por ele.
+* Cada mensagem deve registrar:
+
+  * Remetente;
+  * Conteúdo;
+  * Data;
+  * Hora;
+  * Status de leitura.
+* As mensagens do chat podem ser enviadas e recebidas em tempo real por meio de WebSockets.
+* O sistema deve indicar quando existirem mensagens não lidas.
+* O sistema deve impedir o envio de mensagens por usuários que não participam da conversa.
+
+---
+
+## 4.7 Notificações e avisos
+
+O sistema deve notificar os usuários sobre eventos relevantes, incluindo:
+
+* Aprovação ou rejeição do cadastro;
+* Início de um leilão;
+* Lance realizado com sucesso;
+* Lance superado por outro usuário;
+* Pausa ou cancelamento de um leilão;
+* Encerramento de um leilão;
+* Vitória em um leilão;
+* Liberação do chat;
+* Recebimento de uma nova mensagem.
+
+Ao término de um leilão, o administrador e o vencedor devem receber um aviso sobre:
+
+* Resultado do leilão;
+* Valor vencedor;
+* Usuário vencedor;
+* Disponibilização do chat interno.
+
+O sistema deve informar claramente que:
+
+* Pagamentos não são processados pela plataforma;
+* Fretes não são calculados ou organizados pela plataforma;
+* A entrega deve ser combinada diretamente entre o administrador e o vencedor;
+* O chat é apenas um meio de comunicação entre as partes.
+
+---
+
+## 4.8 Painel administrativo
+
+O painel administrativo deve permitir:
+
+* Visualizar usuários pendentes;
+* Aprovar usuários;
+* Rejeitar usuários;
+* Consultar usuários aprovados e rejeitados;
+* Cadastrar cartas;
+* Editar cartas;
+* Consultar cartas cadastradas;
+* Criar leilões;
+* Editar leilões;
+* Publicar leilões;
+* Pausar e retomar leilões;
+* Cancelar leilões;
+* Encerrar leilões;
+* Consultar lances;
+* Consultar vencedores;
+* Consultar conversas;
+* Consultar notificações e eventos relevantes.
+
+Ações críticas, como pausar, cancelar ou encerrar um leilão, devem solicitar confirmação antes da execução.
+
+---
+
+## 5. Páginas obrigatórias
+
+O frontend deve possuir, no mínimo, as seguintes páginas:
+
+### Página inicial
+
+Deve apresentar:
+
+* Leilões ativos;
+* Imagem das cartas;
+* Nome e código das cartas;
+* Maior lance atual;
+* Usuário responsável pelo maior lance;
+* Tempo restante;
+* Link para os detalhes do leilão.
+
+### Página de detalhes do leilão
+
+Deve apresentar:
+
+* Informações completas da carta;
+* Dados do leilão;
+* Maior lance atual;
+* Histórico de lances;
+* Contagem regressiva;
+* Campo para realizar um lance;
+* Atualizações em tempo real.
+
+### Página de login
+
+Deve permitir que usuários cadastrados acessem o sistema.
+
+### Página de cadastro
+
+Deve permitir a criação de uma nova conta e informar que o cadastro dependerá de aprovação administrativa.
+
+### Página de perfil
+
+Deve apresentar os dados do usuário e o status da aprovação.
+
+### Área “Meus lances”
+
+Deve apresentar os leilões nos quais o usuário realizou lances, incluindo:
+
+* Valor do maior lance;
+* Último lance realizado pelo usuário;
+* Status do leilão;
+* Indicação de que o usuário está vencendo ou foi superado.
+
+### Área “Leilões vencidos”
+
+Deve apresentar os leilões vencidos pelo usuário, incluindo:
+
+* Carta;
+* Valor vencedor;
+* Data de encerramento;
+* Acesso ao chat.
+
+### Página de chat
+
+Deve permitir a comunicação em tempo real entre o administrador e o vencedor.
+
+### Painel administrativo
+
+Deve permitir o gerenciamento de usuários, cartas, leilões, lances, vencedores e conversas.
+
+---
+
+## 6. Regras de negócio
+
+* A plataforma é exclusiva para leilões de cartas Pokémon TCG.
+* Somente o administrador pode anunciar e vender cartas.
+* Usuários precisam ser aprovados para realizar lances.
+* O primeiro lance deve ser igual ou superior ao valor inicial.
+* Os próximos lances devem respeitar o incremento mínimo configurado.
+* O incremento mínimo é definido individualmente para cada leilão.
+* O maior lance válido no momento exato do encerramento define o vencedor.
+* O horário considerado deve ser o horário registrado e validado pelo servidor.
+* Não existe extensão automática do prazo do leilão.
+* Lances não podem ser alterados, cancelados ou removidos após o envio.
+* Não existem lances automáticos.
+* O nome do usuário que realizou cada lance deve ser público.
+* O chat somente pode ser liberado após o encerramento do leilão.
+* O chat somente pode ser acessado pelo administrador e pelo vencedor.
+* Pagamento, entrega e frete são responsabilidade do administrador e do vencedor.
+* A plataforma não deve processar pagamentos.
+* A plataforma não deve calcular ou contratar fretes.
+* As regras de validação devem ser aplicadas pelo backend, mesmo que também existam validações no frontend.
+
+---
+
+## 7. Requisitos não funcionais
+
+### 7.1 Interface e experiência do usuário
+
+* A interface deve ser moderna, clara e responsiva.
+* O sistema deve funcionar em computadores, tablets e celulares.
+* A navegação deve ser simples e intuitiva.
+* O tempo restante dos leilões deve ser apresentado de forma clara.
+* Alterações de lances e status devem ser apresentadas sem recarregar a página.
+* Mensagens de erro e sucesso devem ser compreensíveis.
+
+### 7.2 Segurança
+
+* As senhas devem ser armazenadas utilizando algoritmos seguros de hash.
+* O sistema deve utilizar autenticação segura.
+* Rotas protegidas devem exigir autenticação.
+* As permissões devem ser verificadas no backend.
+* Apenas administradores podem acessar funções administrativas.
+* Apenas usuários aprovados podem realizar lances.
+* Apenas os participantes autorizados podem acessar uma conversa.
+* O backend não deve confiar exclusivamente nas validações realizadas pelo frontend.
+* Dados recebidos pela API e pelos WebSockets devem ser validados.
+* Informações sensíveis não devem ser expostas nas respostas da API.
+
+### 7.3 Banco de dados
+
+O PostgreSQL deve armazenar:
+
+* Usuários;
+* Status e histórico de aprovação;
+* Cartas;
+* Leilões;
+* Lances;
+* Vencedores;
+* Conversas;
+* Mensagens;
+* Notificações.
+
+As alterações na estrutura do banco de dados devem ser versionadas e executadas por meio do Alembic.
+
+As migrações devem permitir:
+
+* Criar novas tabelas;
+* Alterar tabelas existentes;
+* Adicionar ou remover colunas;
+* Criar índices;
+* Criar restrições;
+* Atualizar o banco de maneira controlada entre diferentes ambientes.
+
+### 7.4 Concorrência e consistência
+
+* O sistema deve tratar lances simultâneos de maneira segura.
+* O registro de um lance deve ocorrer dentro de uma operação transacional.
+* Antes de salvar um lance, o backend deve consultar e validar novamente o maior lance atual.
+* O sistema deve impedir que dois usuários sejam definidos como vencedores do mesmo leilão.
+* O valor armazenado como maior lance deve permanecer consistente com o histórico de lances.
+* O encerramento do leilão deve impedir imediatamente novos lances.
+
+### 7.5 Desempenho e tempo real
+
+* As informações dos leilões devem ser carregadas rapidamente.
+* Os novos lances devem ser enviados aos usuários conectados por WebSockets.
+* O sistema deve suportar vários usuários acompanhando o mesmo leilão.
+* A comunicação em tempo real deve ser separada por leilão, evitando o envio de eventos para usuários que não estejam acompanhando aquele leilão.
+* A indisponibilidade temporária do WebSocket não deve impedir o acesso às informações pela API.
+* Após uma reconexão, o frontend deve recuperar o estado mais recente do leilão.
+
+### 7.6 Registro e auditoria
+
+O sistema deve registrar data e hora de eventos importantes, incluindo:
+
+* Cadastro de usuários;
+* Aprovação ou rejeição de usuários;
+* Criação e alteração de cartas;
+* Criação e alteração de leilões;
+* Publicação, pausa, cancelamento e encerramento de leilões;
+* Realização de lances;
+* Definição de vencedores;
+* Envio de mensagens.
+
+Os registros devem utilizar uma referência de data e hora consistente no backend.
+
+---
+
+## 8. Arquitetura geral esperada
+
+A aplicação deve ser dividida em dois componentes principais.
+
+### Backend FastAPI
+
+Responsável por:
+
+* Expor os endpoints da API;
+* Validar os dados recebidos;
+* Executar as regras de negócio;
+* Controlar autenticação e autorização;
+* Acessar o PostgreSQL;
+* Executar operações transacionais;
+* Gerenciar conexões WebSocket;
+* Enviar eventos em tempo real;
+* Encerrar leilões e definir vencedores;
+* Gerenciar o chat e as notificações.
+
+### Frontend React com TypeScript
+
+Responsável por:
+
+* Apresentar a interface da aplicação;
+* Consumir os endpoints da API;
+* Manter a sessão do usuário;
+* Exibir as páginas públicas e privadas;
+* Conectar-se aos WebSockets;
+* Atualizar lances, histórico, status e mensagens em tempo real;
+* Tratar erros e estados de carregamento;
+* Adaptar a interface para diferentes tamanhos de tela.
+
+O PostgreSQL deve ser utilizado como fonte oficial e persistente dos dados. A API deve ser responsável pelas operações e validações, enquanto os WebSockets devem distribuir aos clientes as alterações que ocorrerem no sistema.
+
+## Conteinerização e ambiente de execução
+
+Toda a aplicação deve ser conteinerizada utilizando Docker e executada de forma integrada por meio do Docker Compose.
+
+A solução deve possuir, no mínimo, três serviços separados:
+
+Backend: aplicação Python com FastAPI;
+Frontend: aplicação React com TypeScript;
+Banco de dados: PostgreSQL executado em um contêiner próprio.
